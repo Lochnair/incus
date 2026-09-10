@@ -226,6 +226,15 @@ func (d *gpuPhysical) startContainer() (*deviceConfig.RunConfig, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			if gpu.Nvidia.UUID == "" {
+				return nil, fmt.Errorf("NVIDIA GPU %q is missing its UUID", gpu.PCIAddress)
+			}
+			
+			runConf.GPUDevice = append(runConf.GPUDevice, deviceConfig.RunConfigItem{
+				Key:   GPUNvidiaDeviceKey,
+				Value: gpu.Nvidia.UUID,
+			})
 		}
 	}
 
